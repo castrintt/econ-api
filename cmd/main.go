@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -24,5 +25,8 @@ func main() {
 		configuration: config,
 	}
 	handler := api.mount()
-	api.run(handler)
+	if err := api.run(handler); err != nil {
+		log.Println("Error starting server:", err)
+		os.Exit(1)
+	}
 }

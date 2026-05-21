@@ -1,32 +1,18 @@
 package main
 
 import (
-	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/castrintt/econ-api/cmd/api"
+	"github.com/castrintt/econ-api/cmd/env"
+	"github.com/castrintt/econ-api/cmd/logger"
 )
 
 func main() {
-	_ = godotenv.Load()
-
-	config := configuration{
-		port: getenvOrDefault("APPLICATION_PORT", ":8080"),
-		database: databaseConfiguration{
-			host:         getenvOrDefault("DB_HOST", "localhost"),
-			port:         getenvOrDefault("DB_PORT", "5432"),
-			user:         getenvOrDefault("DB_USER", "postgres"),
-			password:     os.Getenv("DB_PASSWORD"),
-			databaseName: getenvOrDefault("DB_NAME", "postgres"),
-		},
-	}
-
-	api := &application{
-		configuration: config,
-	}
-	handler := api.mount()
-	if err := api.run(handler); err != nil {
-		log.Println("Error starting server:", err)
+	env.InitializeEnvironmentVariables()
+	slog := logger.InitializeLogger()
+	if err := api.InitializeApplication(); err != nil {
+		slog.Error("Error starting server", "error", err)
 		os.Exit(1)
 	}
 }

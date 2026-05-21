@@ -1,10 +1,11 @@
-package main
+package api
 
 import (
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/castrintt/econ-api/cmd/env"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -39,6 +40,24 @@ func (app *application) run(handler http.Handler) error {
 	log.Println("Starting server on port", app.configuration.port)
 
 	return server.ListenAndServe()
+}
+
+func InitializeApplication() error {
+	config := configuration{
+		port: env.APPLICATION_PORT,
+		database: databaseConfiguration{
+			host:         env.DB_HOST,
+			port:         env.DB_PORT,
+			user:         env.DB_USER,
+			password:     env.DB_PASSWORD,
+			databaseName: env.DB_NAME,
+		},
+	}
+	api := &application{
+		configuration: config,
+	}
+	handler := api.mount()
+	return api.run(handler)
 }
 
 type application struct {

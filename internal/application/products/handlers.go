@@ -19,17 +19,16 @@ func NewHandler(service Service) *handler {
 
 // methods
 func (h *handler) GetProducts(w http.ResponseWriter, r *http.Request) {
-
+	context := r.Context()
 	// limit := r.URL.Query().Get("limit")
 	// offset := r.URL.Query().Get("offset")
 	// name := r.URL.Query().Get("name")
 
-	err := h.service.GetProducts(r.Context())
+	products, err := h.service.GetProducts(context)
 	if err != nil {
 		slog.Error("Error getting products", "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	shared.WriteAsJSON(w, http.StatusOK, nil)
+	shared.WriteAsJSON(w, http.StatusOK, products)
 }

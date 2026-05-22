@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/castrintt/econ-api/cmd/env"
+	"github.com/castrintt/econ-api/internal/application/products"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -21,10 +22,14 @@ func (app *application) mount() http.Handler {
 
 	router.Get("/health", func(response http.ResponseWriter, request *http.Request) {
 		response.WriteHeader(http.StatusOK)
-		response.Write([]byte("Hello, World!"))
+		response.Write([]byte("Healthy! 🚀"))
 	})
 
-	// http.ListenAndServe(":3333", router)
+	productService := products.NewService()
+	productHandler := products.NewHandler(productService)
+
+	router.Get("/products", productHandler.GetProducts)
+
 	return router
 }
 

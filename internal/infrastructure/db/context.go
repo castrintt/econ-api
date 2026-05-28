@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/castrintt/econ-api/cmd/env"
@@ -30,11 +29,10 @@ func DatabaseConfigurationFromEnv() DatabaseConfiguration {
 	}
 }
 
-
 func InitializeDatabase(ctx context.Context, connection string) error {
 	if err := connect(context.Background(), connection); err != nil {
 		slog.Error("Database connection failed", "error", err)
-		return errors.New("database connection failed")
+		panic(err)
 	}
 	return nil
 }

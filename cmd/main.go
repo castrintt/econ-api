@@ -11,6 +11,7 @@ import (
 func main() {
 	env.InitializeEnvironmentVariables()
 	slog := logger.InitializeLogger()
+
 	if err := api.InitializeApplication(); err != nil {
 		slog.Error("Error starting server", "error", err)
 		os.Exit(1)
